@@ -1,0 +1,26 @@
+services:
+  mongodb:
+    image: mongo:6
+    container_name: eshop_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: eshop
+    volumes:
+      - mongo_data:/data/db
+
+  streamlit:
+    build: .
+    container_name: eshop_streamlit
+    depends_on:
+      - mongodb
+    ports:
+      - "8501:8501"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/eshop
+    volumes:
+      - ./:/app
+
+volumes:
+  mongo_data:
